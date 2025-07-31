@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart CAGR Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 30px;
+    }
+    .container {
+      max-width: 450px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      display: block;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #218838;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 17px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Smart CAGR Calculator</h2>
+
+    <label for="startValue">Start Value:</label>
+    <input type="number" id="startValue" placeholder="e.g. 10000">
+
+    <label for="endValue">End Value:</label>
+    <input type="number" id="endValue" placeholder="e.g. 15000">
+
+    <label for="cagr">CAGR (%):</label>
+    <input type="number" step="0.01" id="cagr" placeholder="e.g. 8.5">
+
+    <label for="years">Number of Years:</label>
+    <input type="number" step="0.1" id="years" placeholder="e.g. 5">
+
+    <button onclick="calculate()">Calculate Missing Value</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculate() {
+      const startValue = parseFloat(document.getElementById("startValue").value);
+      const endValue = parseFloat(document.getElementById("endValue").value);
+      const cagr = parseFloat(document.getElementById("cagr").value) / 100;
+      const years = parseFloat(document.getElementById("years").value);
+
+      let resultText = "";
+
+      // Calculate missing field based on available inputs
+      if (!isNaN(startValue) && !isNaN(endValue) && !isNaN(years) && isNaN(cagr)) {
+        // Calculate CAGR
+        const cagrValue = (endValue / startValue) ** (1 / years) - 1;
+        resultText = `CAGR: ${(cagrValue * 100).toFixed(2)}%`;
+      } else if (!isNaN(startValue) && !isNaN(cagr) && !isNaN(years) && isNaN(endValue)) {
+        // Calculate End Value
+        const end = startValue * ((1 + cagr) ** years);
+        resultText = `End Value: ₹${end.toFixed(2)}`;
+      } else if (!isNaN(endValue) && !isNaN(cagr) && !isNaN(years) && isNaN(startValue)) {
+        // Calculate Start Value
+        const start = endValue / ((1 + cagr) ** years);
+        resultText = `Start Value: ₹${start.toFixed(2)}`;
+      } else if (!isNaN(startValue) && !isNaN(endValue) && !isNaN(cagr) && isNaN(years)) {
+        // Calculate Years
+        const y = Math.log(endValue / startValue) / Math.log(1 + cagr);
+        resultText = `Years: ${y.toFixed(2)} years`;
+      } else {
+        resultText = "Please enter any three values to calculate the fourth.";
+      }
+
+      document.getElementById("result").innerText = resultText;
+    }
+  </script>
+</body>
+</html>
